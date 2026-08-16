@@ -44,9 +44,14 @@ function SignupPageInner() {
   const [success, setSuccess] = useState(false);
   const supabase = createClient();
 
+  // Debug: confirm the env vars this client was built with (browser).
+  console.log("[signup] Supabase URL configured as:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    console.log("[signup] create account requested for:", email, { fullName });
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -79,12 +84,17 @@ function SignupPageInner() {
       },
     });
 
+    // Debug: log the exact auth response (success or failure object).
+    console.log("[signup] supabase.auth.signUp() response:", { error });
+
     if (error) {
+      console.error("[signup] signup request failed:", error);
       setError(error.message);
       setLoading(false);
       return;
     }
 
+    console.log("[signup] signup request succeeded — confirmation email flow started.");
     setSuccess(true);
     setLoading(false);
   };
